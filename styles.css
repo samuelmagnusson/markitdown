@@ -1,0 +1,21 @@
+thead {
+  border-bottom: 2px solid rgb(160 160 160);
+  text-align: center;
+  background-color: #2c5e77;
+  color: #fff;
+}
+
+tbody {
+  background-color: #e4f0f5;
+}
+table{
+width:100%;
+}
+
+h2{
+ color: #2c5e77;
+}
+
+code{
+ background-color: #2c5e77;
+}
