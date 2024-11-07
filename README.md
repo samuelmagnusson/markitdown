@@ -1,7 +1,11 @@
 
 # Markitdown
+
+
 This is a markdown generation framework aimed for creating reports 
-or other auto-generated documents It supports the following text features: 
+or other auto-generated documents. It supports the following text features: 
+
+
 
 
 |Feature          |Example          |
@@ -12,11 +16,17 @@ or other auto-generated documents It supports the following text features:
 |Strikethrou text |~~Example~~      |
 |Multiple weights |***~~Example~~***|
 
-It is also possible to a quote: 
+
+
+It is also possible to ad a quote: 
+
+
 
 >  This is a awsome quote
 
-or a code block
+or a code block: 
+
+
 
 ```
 
@@ -33,3 +43,24 @@ or a code block
             table.add_row(example)
     
 ```
+
+
+It is also possible to use lists: 
+
+
+
+- Välling
+- Choklad
+- **Margarin**
+
+
+
+
+
+1. Välling
+2. Choklad
+3. **Margarin**
+	- Kanin
+	- Björn
+	- koala
+4. Kött

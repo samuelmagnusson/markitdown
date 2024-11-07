@@ -5,7 +5,7 @@ document = Document(file_name="README.md",file_path='../')
 document.heading("Markitdown")
 
 document.text("This is a markdown generation "
-              "framework aimed for creating reports or other auto-generated documents")
+              "framework aimed for creating reports or other auto-generated documents.")
 document.text("It supports the following text features: ")
 table = document.table(["Feature","Example"])
 
@@ -33,8 +33,19 @@ code_block="""
         for example in features_examples:
             table.add_row(example)
     """
-(document.text("It is also possible to a quote: ").quote("This is a awsome quote").text("or a code block")
+(document.text("It is also possible to ad a quote: ").quote("This is a awsome quote").text("or a code block: ")
  .fenced_code_block(code_block))
 
 
+shopping_list = ["Välling","Choklad",DocText().text("Margarin").bold()]
+document.text("It is also possible to use lists: ")
+
+unordered_list = document.unordered_list()
+ordered_list = document.ordered_list()
+for thing in shopping_list:
+   unordered_list.add_item(thing)
+   ordered_list.add_item(thing)
+
+ordered_list.unordered_list().add_item("Kanin").add_item("Björn").add_item("koala").get_parent() \
+    .add_item("Kött")
 document.store_document()
