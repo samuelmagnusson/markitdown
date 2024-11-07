@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import os.path
+from fileinput import filename
 from typing import TypeVar, Iterable
 
 import markdown
@@ -112,7 +114,7 @@ class DocText:
                 # nospace=True
             else:
                 nospace = True
-        if type(self.parent_feature) == Table and self.render_spaces is not None:
+        if self.parent_feature == Table and self.render_spaces is not None:
                 spaces=''
                 emptylist = [' ' for r in range(0,self.render_spaces)]
                 orig_word = md_str
@@ -122,15 +124,20 @@ class DocText:
         else:
             new_break_index = 10
             new_word = md_str
-        new_md_string = self._add_line_break(new_word,breakindex=new_break_index)
+
+        if self.parent_feature != FencedCodeBlock:
+            new_md_string = self._add_line_break(new_word,breakindex=new_break_index)
+        else:
+            new_md_string = new_word
         return new_md_string
 
 
 class Document:
 
-    def __init__(self, filename=None):
+    def __init__(self, file_name=None,file_path=None):
         self.md_objects = []
-        self.file_name = filename
+        self.file_name = file_name
+        self.file_path = file_path
 
     def quote(self, doctext: DocText|str):
         quote = Quote(doctext)
@@ -241,7 +248,11 @@ class Document:
             body_tag.insert(0,bf)
 
             content = new_document.prettify(formatter="html5")
-        with open(self.file_name, 'w') as file:
+        if self.file_path is not None:
+            file_and_path = os.path.join(self.file_path,self.file_name)
+        else:
+            file_and_path = self.file_name
+        with open(file_and_path, 'w') as file:
             file.write(content)
 
     def _call_by_text(self, func: str, text_obj: str | DocText = None):
@@ -270,6 +281,7 @@ class Formater:
     def __init__(self):
         self.parent = None
         self.child = None
+        self.parent_document = None
 
     @staticmethod
     def _text_escape(text: str):
@@ -359,7 +371,6 @@ class MDlist(Formater):
     def __init__(self):
         super().__init__()
         self.items = []
-        self.parent_document = None
         self.invocation_level = 0
         self.items_counter = 0
         self.block_addition = False
@@ -612,27 +623,34 @@ class Table(Formater):
         super().__init__()
         self.headers = self._entry_to_doc_text(headers)
         self.rows = []
-        self.parent_document = None
 
-    def _entry_to_doc_text(self,entries,parent_feature=None):
+
+    def _entry_to_doc_text(self, entries,parent_feature=None):
         for i, entry in enumerate(entries):
+
             if type(entry) == str:
-                entries[i] = DocText(parent_feature=parent_feature).nospace(entry)
-            elif type(entry) == DocText:
-                entry.parent_feature = parent_feature
+                new_entry = DocText().nospace(entry)
+                new_entry.parent_feature = parent_feature
+
+            elif type(entry)==DocText:
+                new_entry = entry
+                new_entry.parent_feature=parent_feature
             else:
-                entries[i] = DocText(parent_feature=parent_feature).nospace(str(entry))
+                new_entry = DocText().nospace(str(entry))
+                new_entry.parent_feature = parent_feature
+            entries[i] = new_entry
         return entries
 
     def add_row(self,values:Iterable,index=None):
         if len(self.headers)!= len(values):
             raise FormatingException("Cannot add row with a size not matching size of headers")
         else:
+            rows = self._entry_to_doc_text(values,Table)
             if index is not None:
-                self.rows.insert(index,self._entry_to_doc_text(values,parent_feature=self))
+                self.rows.insert(index, rows)
             else:
-                values = self._entry_to_doc_text(values,parent_feature=self)
-                self.rows.append(values)
+                self.rows.append(rows)
+
         return self
 
     def _join_row(self,acc_row,new_col,last_col=False):
@@ -675,7 +693,6 @@ class Table(Formater):
 
     def _render(self):
         self.add_row(self.headers, 0)
-        self.rows
         wordcounts = self._get_second_rows_count(self.rows)
         second_row = self._create_second_row(wordcounts)
         self.add_row(second_row,1)

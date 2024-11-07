@@ -113,12 +113,16 @@ def test_fenced_code_block_long_text():
                                       " Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul"
                                       " Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul"
                                       " Jag är gul ").render_document_text()
-    assert md == "\n\n```\nJag är gul Jag är gul Jag är gul Jag "\
-                 "\när gul Jag är gul Jag är gul Jag är \ngul Jag är gul Jag är gul Jag är gul "\
-                 "\nJag är gul Jag är gul Jag är gul Jag \när gul Jag är gul Jag är gul Jag är "\
-                 "\ngul Jag är gul Jag är gul Jag är gul \nJag är gul Jag är gul Jag är gul Jag "\
-                 "\när gul Jag är gul Jag är gul Jag är \ngul Jag är gul Jag är gul Jag är gul "\
-                 "\nJag är gul Jag är gul Jag är gul Jag \när gul Jag är gul Jag är gul \n```\n"
+    assert md ==('\n'
+ '\n'
+ '```\n'
+ 'Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul '
+ 'Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul '
+ 'Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul '
+ 'Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul '
+ 'Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul Jag är gul '
+ 'Jag är gul \n'
+ '```\n')
 
 
 def test_fenced_code_block_with_doc_text():
